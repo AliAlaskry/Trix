@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59dfc53795ea2f4489781d8372c63907, type: 3}
+  m_Name: DewaniaHostConstants
+  m_EditorClassIdentifier: 
+  Scheme: https
+  URL: api.aldewanyh.com
+  WebSocketEndpoint: users
+  MainHttpHeaders_Keys:
+  - Content-Type
+  MainHttpHeaders_Values:
+  - application/json
+  GamesEndpoint: api/games
+  ChatsEndpoint: api/chats
+  HttpTimeout: 10
+  HttpRedirectLimit: 400
+  RequiredPlayers: 4
+  access_token_Test: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiQUNDRVNTIiwiaWQiOiI2NWQzYzE0MzRkOTA0MTE5ZWIwZWE3ZTYiLCJuYW1lIjoiTW91c3RhZmEiLCJlbWFpbCI6Im0ubW91c3RhZmEubTIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwicHJpdmlsZWdlcyI6W10sImlhdCI6MTcxMjg1MjA3NywiZXhwIjoxNzEyODgwODc3fQ.xNDr97nxeKx2KxJ0_PeaNziXitfmidy0r1iQneEPuDg
+  playerId_Test: 1
+  gameId_Test: 660cbe36243694dc7ad5b746
+  InGroup_Test: 1
