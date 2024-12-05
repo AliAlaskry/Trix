@@ -1,13 +1,8 @@
-using LessonEra;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UIElements;
 
 [Serializable]
-public class TrixTeam 
+public class TrixTeam
 {
     #region Constructor
     public TrixTeam(int order, TrixPlayer player_1, TrixPlayer player_2)
@@ -41,7 +36,7 @@ public class TrixTeam
     public int TeamPoints { get => teamPoints; private set => teamPoints = value; }
 
     [JsonIgnore]
-    public int Points 
+    public int Points
     {
         get
         {
@@ -49,7 +44,7 @@ public class TrixTeam
             {
                 return Player_1.Points + Player_2.Points + teamPoints;
             }
-            
+
             return Player_1.Points;
         }
         set

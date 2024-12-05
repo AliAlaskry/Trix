@@ -29,7 +29,7 @@ public class TolbaMenuScreenComponents : ScreenComponents
 
         for (int i = 0, count = Tolbas.Length; i < count; i++)
         {
-            Tolbas[i] = new TolbaDisplayItem(GameState.OnSelectNextTolba);
+            Tolbas[i].Initialize(GameState.OnSelectNextTolba);
         }
     }
     #endregion
@@ -39,7 +39,7 @@ public class TolbaMenuScreenComponents : ScreenComponents
 public class TolbaDisplayItem
 {
     #region Constructor
-    public TolbaDisplayItem(UnityAction<int> OnClick)
+    public void Initialize(UnityAction<int> OnClick)
     {
         Button.onClick.RemoveAllListeners();
         Button.onClick.AddListener(() => { OnClick(((int)Tolba)); });

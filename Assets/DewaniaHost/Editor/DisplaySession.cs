@@ -47,7 +47,7 @@ public class DisplaySessionEditor : Editor
 
         EditorGUILayout.Space();
 
-        EditorGUILayout.LabelField("State ID : ", DewaniaSession.DewaniaGameData.DewaniaGameState.ID.ToString());
+        EditorGUILayout.LabelField("State ID : ", DewaniaSession.DewaniaGameData.ID.ToString());
 
         EditorGUILayout.Space();
 
@@ -69,7 +69,7 @@ public class DisplaySessionEditor : Editor
         EditorGUILayout.Space();
 
         EditorGUILayout.LabelField("Game State");
-        EditorGUILayout.TextArea(DewaniaSession.DewaniaGameData.DewaniaGameState.LocalGameState == null ? "" : DewaniaSession.DewaniaGameData.DewaniaGameState.LocalGameState.ToString());
+        EditorGUILayout.TextArea(DewaniaSession.DewaniaGameData.LocalGameState == null ? "" : DewaniaSession.DewaniaGameData.LocalGameState.ToString());
 
         EditorGUILayout.Space();
 

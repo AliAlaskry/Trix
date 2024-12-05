@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ScreenComponentsController : ScreenComponents
@@ -42,7 +39,7 @@ public class ScreenComponentsController : ScreenComponents
     #region Unity Fns
     private void Start()
     {
-        screenComponents = FindObjectsOfType<ScreenComponents>();
+        screenComponents = FindObjectsOfType<ScreenComponents>(true);
     }
     #endregion
 
@@ -77,7 +74,7 @@ public class ScreenComponentsController : ScreenComponents
     #region Listeners
     void OnTrixStateStageChanged(GameStageEnum stage)
     {
-        bool ActiveTolbaMenu = stage == GameStageEnum.SelectTolba && TrixController.GameState.Turn == TrixController.GameState.LocalPlayer.PlayerId;
+        bool ActiveTolbaMenu = stage == GameStageEnum.SelectTolba && TrixController.GameState.OwnerOfLoyalId == TrixController.GameState.LocalPlayer.PlayerId;
         TolbaMenuScript.gameObject.SetActive(ActiveTolbaMenu);
 
         if (ActiveTolbaMenu)

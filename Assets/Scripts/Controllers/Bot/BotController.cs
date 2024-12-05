@@ -1,11 +1,8 @@
 using LessonEra;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public static class BotController
 {
@@ -92,6 +89,8 @@ public static class BotController
                     }
                 }
             }
+
+            TrixController.GameState.ClickReadyToPlay(player);
         });
         Counters.StartCountDown(WaitSeconds_BotTakingActionTimerKey);
     }
@@ -137,7 +136,7 @@ public static class BotController
             {
                 int order = gameState.CurrentTurnPlayer.Order + 1;
                 order %= gameState.Players.Length;
-                gameState.Turn = gameState.GetPlayer(order).PlayerId;
+                //todo: uncomment => gameState.Turn = gameState.GetPlayer(order).PlayerId;
 
                 gameState.SendUpdate();
             }
@@ -226,7 +225,7 @@ public static class BotController
             {
                 int order = TrixController.GameState.CurrentTurnPlayer.Order + 1;
                 order %= TrixController.GameState.Players.Length;
-                TrixController.GameState.Turn = TrixController.GameState.GetPlayer(order).PlayerId;
+                //todo: uncomment => TrixController.GameState.Turn = TrixController.GameState.GetPlayer(order).PlayerId;
 
                 TrixController.GameState.SendUpdate();
             }

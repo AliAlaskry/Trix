@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 123b7c7b48fa2e340ac2b14904298c2e, type: 3}
   m_Name: Avatars Data
   m_EditorClassIdentifier: 
-  Avatars:
+  avatars:
   - {fileID: -1222798838, guid: a3b59c447571af7488b12641c41ab2e4, type: 3}
   - {fileID: 209814084, guid: a3b59c447571af7488b12641c41ab2e4, type: 3}
   - {fileID: 1173222631, guid: a3b59c447571af7488b12641c41ab2e4, type: 3}

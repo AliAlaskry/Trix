@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class AnimationController : MonoBehaviour
 {
@@ -18,7 +15,7 @@ public class AnimationController : MonoBehaviour
     #region Unity Fns
     private void Awake()
     {
-        if(Instance)
+        if (Instance)
         {
             Destroy(gameObject);
             return;
@@ -37,7 +34,7 @@ public class AnimationController : MonoBehaviour
         RemoveGarbageItems();
         foreach (var item in Items)
         {
-            if(item.Delay > 0)
+            if (item.Delay > 0)
             {
                 item.Delay -= Time.fixedDeltaTime;
                 continue;
@@ -91,12 +88,12 @@ public class AnimationController : MonoBehaviour
 
     public ObjToBeAnimatedItem TryGetAnimatedItem(Transform trans)
     {
-        return Items.Find(o => o.Trans == trans); 
+        return Items.Find(o => o.Trans == trans);
     }
 
     void RemoveGarbageItems()
     {
-        for(int i = 0; i < Items.Count;)
+        for (int i = 0; i < Items.Count;)
         {
             ObjToBeAnimatedItem item = Items[i];
             if (item.Trans.IsNull() || item.Time == item.LastKeyTime)
@@ -142,9 +139,9 @@ public class ObjToBeAnimatedItem
 
         float x = Mathf.DeltaAngle(InitialRotation.x, targetRot.x), y = Mathf.DeltaAngle(InitialRotation.y, targetRot.y), z = Mathf.DeltaAngle(InitialRotation.z, targetRot.z);
         TargetRotation = new Vector3(x, y, z);
-        
+
         TargetSize = targetSize - InitialSize;
-       
+
         AtFinish = atFinish;
 
         Delay = delay;

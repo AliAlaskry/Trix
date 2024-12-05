@@ -1,21 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
-
-public interface IAvatars
-{
-    List<Sprite> Data { get; }
-}
-
-public interface IFrames
-{
-    List<Sprite> Data { get; }
-}
-
-public interface INames
-{
-    List<string> Data { get; }
-}
 
 //[CreateAssetMenu(fileName = "DewaniaHostConstants", menuName = "DewaniaHost/Constants", order = 0)]
 public class DewaniaHostConstants : ScriptableObject
@@ -34,9 +18,9 @@ public class DewaniaHostConstants : ScriptableObject
     public int RequiredPlayers;
 
     [Header("Game Display Data")]
-    public IAvatars Avatars;
-    public IFrames Frames;
-    public INames Names;
+    public Avatars Avatars;
+    public Frames Frames;
+    public Names Names;
 
     [Header("Test Data")]
     public string access_token_Test;

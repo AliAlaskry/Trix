@@ -24,7 +24,10 @@ MonoBehaviour:
   HttpTimeout: 10
   HttpRedirectLimit: 400
   RequiredPlayers: 4
-  access_token_Test: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiQUNDRVNTIiwiaWQiOiI2NWQzYzE0MzRkOTA0MTE5ZWIwZWE3ZTYiLCJuYW1lIjoiTW91c3RhZmEiLCJlbWFpbCI6Im0ubW91c3RhZmEubTIxQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwicHJpdmlsZWdlcyI6W10sImlhdCI6MTcxMjg1MjA3NywiZXhwIjoxNzEyODgwODc3fQ.xNDr97nxeKx2KxJ0_PeaNziXitfmidy0r1iQneEPuDg
-  playerId_Test: 1
-  gameId_Test: 660cbe36243694dc7ad5b746
+  Avatars: {fileID: 11400000, guid: 2d86499b355d6744c927287524be6cb0, type: 2}
+  Frames: {fileID: 11400000, guid: 6dc2479836617e648af9bbb7555fd6c6, type: 2}
+  Names: {fileID: 11400000, guid: 1aa49b9ca6d37454c8cf0cb64885b250, type: 2}
+  access_token_Test: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiQUNDRVNTIiwiaWQiOiI2NzUxODQ1MWZiMjM4ZTc0ZGU4OGRiMDciLCJuYW1lIjoiQWxpIiwiZW1haWwiOiJ0ZXN0MDAwQGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwicHJpdmlsZWdlcyI6W10sImlhdCI6MTczMzQwNzY3NywiZXhwIjoxNzMzNDM2NDc3fQ.eAnkVi6xNF8Q_VRna2xc9bdcuSJCu8y-uiMZjKfz8f0
+  playerId_Test: 67518451fb238e74de88db07
+  gameId_Test: 6751b3c894472797928c25e5
   InGroup_Test: 1

@@ -1,3 +1,4 @@
+using AOT;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SocketIOClient;
@@ -5,6 +6,7 @@ using SocketIOClient.Transport;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
 using UnityMainThreadDispatcher;
@@ -148,7 +150,7 @@ public static class DewaniaHostController
 #if !UNITY_WEBGL || UNITY_EDITOR
             Client.Connect();
 #else
-            SokcetIOConnect(Session.AccessToken, OnConnect_WebGl, OnHostError_WebGl, OnReconnectAttempt_WebGl, OnReconnected_WebGl, 
+            SokcetIOConnect(DewaniaSession.AccessToken, OnConnect_WebGl, OnHostError_WebGl, OnReconnectAttempt_WebGl, OnReconnected_WebGl, 
                 OnReconnectError_WebGl, OnReconnectFail_WebGl, OnHostError_WebGl, OnDisconnect_WebGl, OnReceivedGameState_WebGl, 
                 OnPlayerConnected_WebGl, OnPlayerDisconnected_WebGl, OnRecievedMessage_WebGl);
 #endif
@@ -242,7 +244,7 @@ public static class DewaniaHostController
                 {
                     CurrentOperation = CurrentOperationEnum.Free;
                     int id = GetStateIdFromResponse(data);
-                    DewaniaSession.DewaniaGameData.DewaniaGameState.ID = id;
+                    ID = id;
                     onSuccess?.Invoke(data);
                 }, (error) =>
                 {
@@ -298,7 +300,7 @@ public static class DewaniaHostController
 #if !UNITY_WEBGL || UNITY_EDITOR
         Client.Connect();
 #else
-        SokcetIOConnect(Session.AccessToken, OnConnect_WebGl, OnHostError_WebGl, OnReconnectAttempt_WebGl, OnReconnected_WebGl,
+        SokcetIOConnect(DewaniaSession.AccessToken, OnConnect_WebGl, OnHostError_WebGl, OnReconnectAttempt_WebGl, OnReconnected_WebGl,
             OnReconnectError_WebGl, OnReconnectFail_WebGl, OnHostError_WebGl, OnDisconnect_WebGl, OnReceivedGameState_WebGl,
             OnPlayerConnected_WebGl, OnPlayerDisconnected_WebGl, OnRecievedMessage_WebGl);
 #endif
@@ -324,7 +326,7 @@ public static class DewaniaHostController
             CancelCurrentOperation(() =>
             {
                 CurrentOperation = CurrentOperationEnum.UpdatingGameState;
-                DewaniaSession.DewaniaGameData.DewaniaGameState.Update(data, OnError);
+                Update(data, OnError);
             }, 2);
         }
     }
@@ -451,19 +453,19 @@ public static class DewaniaHostController
 
                 int id = GetStateIdFromData(data);
 
-                if (Session.GameData.State.ID == id)
+                if (ID == id)
                 {
                     Debugging.Print($"the same current state {id}");
                     return;
                 }
 
-                Session.GameData.State.ID = id;
+                ID = id;
 
                 JObject Jstate = GetStateFromData(data);
 
                 string state = Jstate == null ? "" : Jstate.ToString(Formatting.Indented);
 
-                Session.GameData.State.LocalGameState = state;
+                LocalGameState = state;
 
                 foreach (IReceiveGameStateCallbacks callback in Callbacks.OnReceivedGameStateCallbacks)
                     callback.OnReceivedGameState(state);
@@ -482,7 +484,7 @@ public static class DewaniaHostController
             JObject data = JObject.Parse(response);
             string id = (string)data["player"];
             Debug.Log("player join = " + id);
-            Player player = GetPlayer(id);
+            DewaniaPlayer player = GetPlayer(id);
             if (player != null)
             {
                 player.UpdateConnectionState(true);
@@ -502,7 +504,7 @@ public static class DewaniaHostController
             JObject data = JObject.Parse(response);
             string id = (string)data["player"];
             Debugging.Print("player left = " + id);
-            Player player = GetPlayer(id);
+            DewaniaPlayer player = GetPlayer(id);
             if (player != null)
             {
                 player.UpdateConnectionState(false);
@@ -577,7 +579,7 @@ public static class DewaniaHostController
 
         string state = obj == null ? "" : obj.ToString(Formatting.Indented);
 
-        DewaniaGameState.LocalGameState = state;
+        LocalGameState = state;
 
         foreach (IReceiveGameStateCallbacks Callback in Callbacks.OnReceivedGameStateCallbacks)
         {
@@ -692,19 +694,19 @@ public static class DewaniaHostController
 
                 int id = GetStateIdFromData(data);
 
-                if (DewaniaSession.DewaniaGameData.DewaniaGameState.ID == id)
+                if (ID == id)
                 {
                     Debugging.Print($"the same current state {id}");
                     return;
                 }
 
-                DewaniaSession.DewaniaGameData.DewaniaGameState.ID = id;
+                ID = id;
 
                 JObject Jstate = GetStateFromData(data);
 
                 string state = Jstate == null ? "" : Jstate.ToString(Formatting.Indented);
 
-                DewaniaSession.DewaniaGameData.DewaniaGameState.LocalGameState = state;
+                LocalGameState = state;
 
                 foreach (IReceiveGameStateCallbacks callback in Callbacks.OnReceivedGameStateCallbacks)
                     callback.OnReceivedGameState(state);
@@ -935,14 +937,16 @@ public static class DewaniaHostController
                 // new player joined
                 if (TryGetBot(out DewaniaPlayer bot))
                 {
-                    bot = new DewaniaPlayer(true, recievedPlayer.ID, recievedPlayer.Name, recievedPlayer.Pic, "",
+                    player = bot = new DewaniaPlayer(true, recievedPlayer.ID, recievedPlayer.Name, recievedPlayer.Pic, "",
                         recievedPlayer.Level, recievedPlayer.Points, recievedPlayer.IsOnline());
                 }
                 else
                 {
-                    Players.Add(new DewaniaPlayer(false, recievedPlayer.ID,
+                    player = new DewaniaPlayer(false, recievedPlayer.ID,
                         recievedPlayer.Name, recievedPlayer.Pic, "", 
-                        recievedPlayer.Level, recievedPlayer.Points, recievedPlayer.IsOnline()));
+                        recievedPlayer.Level, recievedPlayer.Points, recievedPlayer.IsOnline());
+
+                    Players.Add(player);
                 }
 
                 foreach (IOnPlayerJoinedCallback callback in Callbacks.OnPlayerJoinedCallbacks)

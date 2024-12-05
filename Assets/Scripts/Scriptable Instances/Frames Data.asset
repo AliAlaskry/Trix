@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cdf21072ca309c449e5625b4630be84, type: 3}
   m_Name: Frames Data
   m_EditorClassIdentifier: 
-  Frames:
+  frames:
   - {fileID: -373265058, guid: a3b59c447571af7488b12641c41ab2e4, type: 3}

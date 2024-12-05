@@ -1,7 +1,4 @@
-using JetBrains.Annotations;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -25,7 +22,7 @@ public class PointsScreenComponents : ScreenComponents
         }
 
         int order = GameState.LocalPlayer.Order;
-        for(int i = 0; i < PlayersPoints.Length; i++)
+        for (int i = 0; i < PlayersPoints.Length; i++)
         {
             PlayersPoints[i].Initialize(GameState.GetPlayer(order).PlayerId);
 

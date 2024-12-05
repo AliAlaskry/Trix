@@ -12,14 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babde0fcfe6096e47871b4996fedbb22, type: 3}
   m_Name: Names Data
   m_EditorClassIdentifier: 
-  Names:
+  names:
   - Emad
-  - Essam
-  - JokeR22
-  - KR1220
-  - Hager
-  - Farida
-  - Hanan
-  - Logina
-  - Yahia
-  - amJAD2021
+  - Hosam
+  - Esraa
+  - Nada

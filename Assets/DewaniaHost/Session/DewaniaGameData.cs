@@ -83,7 +83,7 @@ public static partial class DewaniaSession
         public static void Reset()
         {
             players = new List<DewaniaPlayer>();
-            DewaniaGameState.ID = 0;
+            ID = 0;
         }
     }
 }

@@ -1,9 +1,5 @@
-using LessonEra;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [Serializable]
@@ -18,6 +14,7 @@ public class Card : IComparable<Card>
         OwnerId = "";
     }
 
+    [JsonConstructor]
     public Card(int suit, int rank)
     {
         Suit = (CardSuit)suit;
@@ -146,17 +143,17 @@ public class Card : IComparable<Card>
 
     public void ReAssignCanBeDoubled()
     {
-        canBeDoubled = (TrixController.GameState.Tolba == TolbaEnum.OldKoba && Suit == CardSuit.Koba && Rank == CardRank.Old) 
+        canBeDoubled = (TrixController.GameState.Tolba == TolbaEnum.OldKoba && Suit == CardSuit.Koba && Rank == CardRank.Old)
             || (TrixController.GameState.Tolba == TolbaEnum.Girls && Rank == CardRank.Girl);
     }
 
     public bool IsStronger(Card card, CardSuit suit)
     {
-        if(Suit == suit && card.Suit == suit)
+        if (Suit == suit && card.Suit == suit)
         {
             return Rank > card.Rank;
         }
-        else if(Suit == suit)
+        else if (Suit == suit)
         {
             return true;
         }
@@ -176,7 +173,7 @@ public class Card : IComparable<Card>
 
     public bool CanBeDropped()
     {
-        if(TrixController.GameState.Stage != GameStageEnum.DropCards) return false;
+        if (TrixController.GameState.Stage != GameStageEnum.DropCards) return false;
         if (OwnerId.IsNull()) return false;
         if (TrixController.GameState.CurrentTurnPlayer.PlayerId != Owner.PlayerId) return false;
 
@@ -193,7 +190,7 @@ public class Card : IComparable<Card>
         if (TrixController.GameState.Tolba != TolbaEnum.TRS) return false;
 
         int rank = ((int)Rank);
-        
+
         if (rank == 11) return true;
 
         if (rank > 11) if (TrixController.GameState.GetCard(Suit, (CardRank)(rank - 1)).Owner.IsNull()) return true;
@@ -210,7 +207,7 @@ public class Card : IComparable<Card>
 
     public int CompareTo(Card other)
     {
-        if(Suit != other.Suit)
+        if (Suit != other.Suit)
         {
             return ((int)Suit).CompareTo(((int)other.Suit));
         }

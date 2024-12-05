@@ -39,8 +39,11 @@ public class PlayerScreenComponents : ScreenComponents
     #region Listeners
     void PlayerDataChanged(TrixPlayer player)
     {
-        Avatar.sprite = player.Avatar;
-        Frame.sprite = player.Frame;
+        if (!player.Avatar.IsNull())
+            Avatar.sprite = player.Avatar;
+        
+        if (!player.Frame.IsNull())
+            Frame.sprite = player.Frame;
 
         Username.text = player.UserName;
     }

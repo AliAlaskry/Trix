@@ -97,7 +97,7 @@ public class TestingWindow : EditorWindow
         };
 
         ScreenComponentsController.Instance?.SubscribeAll();
-        GameState.RecieveState(GameState);
+        GameState.ReceiveState(GameState);
     }
 
     void PlayersJoinedGame()
@@ -107,7 +107,7 @@ public class TestingWindow : EditorWindow
             player.JoinedGame = true;
         }
     
-        GameState.RecieveState(GameState);
+        GameState.ReceiveState(GameState);
     }
 
     void SelectTolba()
@@ -153,7 +153,7 @@ public class TestingWindow : EditorWindow
             {
                 int order = TrixController.GameState.CurrentTurnPlayer.Order + 1;
                 order %= TrixController.GameState.Players.Length;
-                TrixController.GameState.Turn = TrixController.GameState.GetPlayer(order).PlayerId;
+                //todo: remove comment => TrixController.GameState.Turn = TrixController.GameState.GetPlayer(order).PlayerId;
 
                 TrixController.GameState.SendUpdate();
             }

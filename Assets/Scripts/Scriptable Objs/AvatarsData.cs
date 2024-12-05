@@ -1,14 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Avatars Data", menuName = "Trix/Avatars", order = 1)]
-public class AvatarsData : ScriptableObject, IAvatars
+public class Avatars : ScriptableObject
 {
     #region Fields
-    [SerializeField] List<Sprite> Avatars;
+    [SerializeField] List<Sprite> avatars;
 
-    public List<Sprite> Data { get => Avatars; }
+    public List<Sprite> Data { get => avatars; }
     #endregion
 }

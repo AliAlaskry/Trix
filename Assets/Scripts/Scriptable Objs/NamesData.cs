@@ -1,14 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Names Data", menuName = "Trix/Names", order = 3)]
-public class NamesData : ScriptableObject, INames
+public class Names : ScriptableObject
 {
     #region Fields
-    [SerializeField] List<string> Names;
+    [SerializeField] List<string> names;
 
-    public List<string> Data { get => Names; }
+    public List<string> Data { get => names; }
     #endregion
 }

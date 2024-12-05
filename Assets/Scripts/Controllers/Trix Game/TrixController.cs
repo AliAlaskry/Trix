@@ -1,28 +1,28 @@
-using LessonEra;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.VisualScripting;
-using UnityEditor;
+using System.Collections.Specialized;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class TrixController : MonoBehaviour, IReceiveGameStateCallbacks, IOnConnectedCallbacks, IOnPlayerLeftCallback, IOnPlayerJoinedCallback
+public class TrixController : Callback, IReceiveGameStateCallbacks, IOnConnectedCallbacks, IOnPlayerLeftCallback, IOnPlayerJoinedCallback
 {
     #region Variables
     [SerializeReference] public static TrixState GameState;
     public static bool CombineTrix = false;
     #endregion
 
+    #region Externs
+    [DllImport("__Internal")]
+    private static extern string GetURLFromPage();
+    #endregion
+
     #region Unity Fns
     private void Start()
     {
         GetWebviewHeaders(out string access_token, out string localPlayerId, out string gameId, out bool ingroup, out CombineTrix);
-        //DewaniaHostController.Setup(access_token, localPlayerId, gameId, ingroup);
-        //DewaniaHostController.Initialize();
-        //DewaniaHostController.Connect();
+        DewaniaHostController.Setup(access_token, localPlayerId, gameId, ingroup);
+        DewaniaHostController.Initialize();
+        DewaniaHostController.Connect();
 
         GameState = new TrixState(CombineTrix);
         ScreenComponentsController.Instance?.UnsubscribeAll();
@@ -45,6 +45,7 @@ public class TrixController : MonoBehaviour, IReceiveGameStateCallbacks, IOnConn
         localPlayerId = queryParameters["Player_id"];
         gameId = queryParameters["Game_id"];
         ingroup = bool.Parse(queryParameters["InGroup"]);
+        combineTrix = bool.Parse(queryParameters["Combine"]);
         // get combine trix value
 #else
         DewaniaHostConstants constants = NetworkInstance.Instance.Constants;
@@ -102,27 +103,88 @@ public class TrixController : MonoBehaviour, IReceiveGameStateCallbacks, IOnConn
     public void OnReceivedGameState(string data)
     {
         bool isNewGame = data.IsJsonNullOrEmpty();
+
         TrixState temp;
         if (isNewGame)
         {
             temp = new TrixState(CombineTrix);
+
+            if (!temp.PlayersAdded())
+            {
+                AddPlayerData(temp);
+            }
+
+            if (CombineTrix)
+            {
+                int teamIndex = 0, playerIndex = 0;
+                TrixPlayer player_1 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[playerIndex].ID, teamIndex, DewaniaSession.DewaniaGameData.Players[playerIndex].Name,
+                        DewaniaSession.DewaniaGameData.Players[playerIndex].Avatar, DewaniaSession.DewaniaGameData.Players[playerIndex].Frame, 0, playerIndex,
+                        DewaniaSession.DewaniaGameData.Players[playerIndex].IsBot, DewaniaSession.DewaniaGameData.Players[playerIndex].IsOnline(), false);
+
+                playerIndex = 1;
+                TrixPlayer player_2 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[playerIndex].ID, teamIndex, DewaniaSession.DewaniaGameData.Players[playerIndex].Name,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].Avatar, DewaniaSession.DewaniaGameData.Players[playerIndex].Frame, 0, playerIndex,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].IsBot, DewaniaSession.DewaniaGameData.Players[playerIndex].IsOnline(), false);
+
+                teamIndex = 1;
+
+                playerIndex = 2;
+                TrixPlayer player_3 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[playerIndex].ID, teamIndex, DewaniaSession.DewaniaGameData.Players[playerIndex].Name,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].Avatar, DewaniaSession.DewaniaGameData.Players[playerIndex].Frame, 0, playerIndex,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].IsBot, DewaniaSession.DewaniaGameData.Players[playerIndex].IsOnline(), false);
+
+                playerIndex = 3;
+                TrixPlayer player_4 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[playerIndex].ID, teamIndex, DewaniaSession.DewaniaGameData.Players[playerIndex].Name,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].Avatar, DewaniaSession.DewaniaGameData.Players[playerIndex].Frame, 0, playerIndex,
+                         DewaniaSession.DewaniaGameData.Players[playerIndex].IsBot, DewaniaSession.DewaniaGameData.Players[playerIndex].IsOnline(), false);
+
+                temp.Teams = new TrixTeam[2]
+                {
+                    new TrixTeam(0, player_1, player_2),
+                    new TrixTeam(1, player_3, player_4),
+                };
+            }
+            else
+            {
+                int index = 0;
+                TrixPlayer player_1 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[index].ID, index, DewaniaSession.DewaniaGameData.Players[index].Name,
+                        DewaniaSession.DewaniaGameData.Players[index].Avatar, DewaniaSession.DewaniaGameData.Players[index].Frame, 0, index,
+                        DewaniaSession.DewaniaGameData.Players[index].IsBot, DewaniaSession.DewaniaGameData.Players[index].IsOnline(), false);
+
+                index = 1;
+                TrixPlayer player_2 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[index].ID, index, DewaniaSession.DewaniaGameData.Players[index].Name,
+                         DewaniaSession.DewaniaGameData.Players[index].Avatar, DewaniaSession.DewaniaGameData.Players[index].Frame, 0, index,
+                         DewaniaSession.DewaniaGameData.Players[index].IsBot, DewaniaSession.DewaniaGameData.Players[index].IsOnline(), false);
+
+                index = 2;
+                TrixPlayer player_3 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[index].ID, index, DewaniaSession.DewaniaGameData.Players[index].Name,
+                         DewaniaSession.DewaniaGameData.Players[index].Avatar, DewaniaSession.DewaniaGameData.Players[index].Frame, 0, index,
+                         DewaniaSession.DewaniaGameData.Players[index].IsBot, DewaniaSession.DewaniaGameData.Players[index].IsOnline(), false);
+
+                index = 3;
+                TrixPlayer player_4 = new TrixPlayer(DewaniaSession.DewaniaGameData.Players[index].ID, index, DewaniaSession.DewaniaGameData.Players[index].Name,
+                         DewaniaSession.DewaniaGameData.Players[index].Avatar, DewaniaSession.DewaniaGameData.Players[index].Frame, 0, index,
+                         DewaniaSession.DewaniaGameData.Players[index].IsBot, DewaniaSession.DewaniaGameData.Players[index].IsOnline(), false);
+
+                temp.Teams = new TrixTeam[4]
+                {
+                    new TrixTeam(0, player_1, null),
+                    new TrixTeam(1, player_2, null),
+                    new TrixTeam(2, player_3, null),
+                    new TrixTeam(3, player_4, null),
+                };
+            }
+
+            GameState.ReceiveState(temp);
+
+            GameState.SendUpdate();
         }
-        else 
+        else
         {
             temp = JsonConvert.DeserializeObject<TrixState>(data);
+
+            GameState.ReceiveState(temp);
         }
-
-        if (!GameState.PlayersAdded())
-        {
-            AddPlayerData(temp);
-        }
-
-        GameState.RecieveState(temp);
-
-        if(isNewGame)
-            GameState.SendUpdate();
-
-        ScreenComponentsController.Instance?.SubscribeAll();
     }
 
     public void OnPlayerJoined(DewaniaPlayer player)

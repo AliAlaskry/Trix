@@ -1,14 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Frames Data", menuName = "Trix/Frames", order = 2)]
-public class FramesData : ScriptableObject, IFrames
+public class Frames : ScriptableObject
 {
     #region Fields
-    [SerializeField] List<Sprite> Frames;
+    [SerializeField] List<Sprite> frames;
 
-    public List<Sprite> Data { get => Frames; }
+    public List<Sprite> Data { get => frames; }
     #endregion
 }

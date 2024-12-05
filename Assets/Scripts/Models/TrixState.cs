@@ -2,9 +2,7 @@ using LessonEra;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 
@@ -18,7 +16,7 @@ public class TrixState
 
     #region Constructor
     public TrixState(bool isCombine)
-    {        
+    {
         IsTeams = isCombine;
 
         UpdateLocalStage(GameStageEnum.WaitingForPlayers);
@@ -62,10 +60,10 @@ public class TrixState
     public TolbaEnum Tolba; //Sync 
     [JsonProperty("Turn")]
     private string turn; //Sync
-    
+
     [JsonProperty("TRS Tolba Player Order")]
     public List<string> TRSTolbaPlayerIdsOrder;
-    
+
     [JsonProperty("Teams")]
     public TrixTeam[] Teams; //Sync
 
@@ -84,7 +82,7 @@ public class TrixState
     {
         get
         {
-            TrixPlayer[] temp = new TrixPlayer[4] { null, null, null, null};
+            TrixPlayer[] temp = new TrixPlayer[4] { null, null, null, null };
             int index = 0;
             foreach (var team in Teams)
             {
@@ -105,7 +103,7 @@ public class TrixState
     public string Turn
     {
         get { return turn; }
-        /*todo: private*/ set
+        private set
         {
             if (turn == value) return;
 
@@ -211,6 +209,9 @@ public class TrixState
 
     void ImplementNewStage()
     {
+        if(stage != GameStageEnum.WaitingForPlayers)
+            PlayersJoinedGame?.Invoke();
+
         switch (stage)
         {
             case GameStageEnum.WaitingForPlayers:
@@ -255,10 +256,10 @@ public class TrixState
     public void SendUpdate()
     {
         Debug.Log("update\n" + this.ToString());
-        TrixController.GameState.RecieveState(this);
-        //todo: clear comments
-        //string data = JsonConvert.SerializeObject(this);
-        //DewaniaHostController.UpdateGameState(data);
+        //TrixController.GameState.RecieveState(this);
+
+        string data = JsonConvert.SerializeObject(this);
+        DewaniaHostController.UpdateGameState(data);
     }
     #endregion
 
@@ -396,7 +397,7 @@ public class TrixState
 
     public void AddSpecialSlot(Slot slot)
     {
-        if(slot.IsEmpty())
+        if (slot.IsEmpty())
         {
             Debug.Log("try to add empty special slot");
             return;
@@ -413,7 +414,7 @@ public class TrixState
         int index = Array.FindIndex(specialSlots, o => o.IsNull() || o.IsEmpty());
 
         Debug.Log("add special slot at " + index);
-        
+
         specialSlots[index] = slot;
     }
 
@@ -432,7 +433,7 @@ public class TrixState
         }
 
         int index = Array.FindIndex(specialSlots, o => !o.IsNull() && o.IsTheSameSlot(slot));
-        if(index != -1) specialSlots[index] = null;
+        if (index != -1) specialSlots[index] = null;
     }
 
     public void RemoveSpecialSlot(Card card)
@@ -461,7 +462,7 @@ public class TrixState
     [ContextMenu("Check Spcial Slot Data")]
     void CheckSpecialSlots()
     {
-        foreach(var card in Cards)
+        foreach (var card in Cards)
         {
             Slot special = GetSpcialSlot(card);
             if (card.Doubled && (special.IsNull() || special.IsEmpty()))
@@ -474,10 +475,10 @@ public class TrixState
     void DebugSpecialSlots()
     {
         string log = "";
-        if(!specialSlots[0].IsNull()) log += $"[0]:{specialSlots[0].ToString()}";
-        if(!specialSlots[1].IsNull()) log += $"[1]:{specialSlots[1].ToString()}";
-        if(!specialSlots[2].IsNull()) log += $"[2]:{specialSlots[2].ToString()}";
-        if(!specialSlots[3].IsNull()) log += $"[3]:{specialSlots[3].ToString()}";
+        if (!specialSlots[0].IsNull()) log += $"[0]:{specialSlots[0].ToString()}";
+        if (!specialSlots[1].IsNull()) log += $"[1]:{specialSlots[1].ToString()}";
+        if (!specialSlots[2].IsNull()) log += $"[2]:{specialSlots[2].ToString()}";
+        if (!specialSlots[3].IsNull()) log += $"[3]:{specialSlots[3].ToString()}";
         Debug.Log(log);
     }
     #endregion
@@ -490,6 +491,7 @@ public class TrixState
         if (!LocalPlayer.JoinedGame)
         {
             LocalPlayer.JoinedGame = true;
+
             SendUpdate();
         }
 
@@ -532,8 +534,6 @@ public class TrixState
 
     void SelectOwnerOfLoyal()
     {
-        PlayersJoinedGame?.Invoke();
-
         ProccessingAndLoadingData?.Invoke();
 
         TolbaNO = 0;
@@ -542,8 +542,6 @@ public class TrixState
         if (OwnerOfLoyalId.IsNull())
         {
             OwnerOfLoyalId = Players[UnityEngine.Random.Range(0, Players.Length)].PlayerId;
-            //todo: remove next statement
-            OwnerOfLoyalId = Players[0].PlayerId;
         }
         else
         {
@@ -598,7 +596,14 @@ public class TrixState
         if (!LocalPlayer.ReadyToPlay && (TolbaGirlsAndDontHave || TolbaKobaAndDontHave))
         {
             LocalPlayer.ReadyToPlay = true;
+
             SendUpdate();
+        }
+
+        foreach (var player in Players)
+        {
+            if (player.BotPlay)
+                player.Bot_DoubleCard();
         }
     }
 
@@ -766,7 +771,7 @@ public class TrixState
     #endregion
 
     #region Listeners
-    public void RecieveState(TrixState state)
+    public void ReceiveState(TrixState state)
     {
         Debug.Log("received\n" + state.ToString());
         ProccessingAndLoadingData?.Invoke();
@@ -778,14 +783,14 @@ public class TrixState
             TrixTeam currentTeam = Array.Find(Teams, o => !o.IsNull() && o.Order == receivedTeam.Order);
             if (currentTeam.IsNull())
             {
-                TrixPlayer p1 = new TrixPlayer(receivedTeam.Player_1.PlayerId, receivedTeam.Player_1.TeamOrder, receivedTeam.Player_1.UserName, 
+                TrixPlayer p1 = new TrixPlayer(receivedTeam.Player_1.PlayerId, receivedTeam.Player_1.TeamOrder, receivedTeam.Player_1.UserName,
                     receivedTeam.Player_1.Avatar, receivedTeam.Player_1.Frame, receivedTeam.Player_1.Points,
                     receivedTeam.Player_1.Order, receivedTeam.Player_1.BotPlay, receivedTeam.Player_1.JoinedGame, receivedTeam.Player_1.ReadyToPlay);
 
-                TrixPlayer p2 = !IsTeams ? null : new TrixPlayer(receivedTeam.Player_2.PlayerId, receivedTeam.Player_2.TeamOrder, receivedTeam.Player_2.UserName, 
+                TrixPlayer p2 = !IsTeams ? null : new TrixPlayer(receivedTeam.Player_2.PlayerId, receivedTeam.Player_2.TeamOrder, receivedTeam.Player_2.UserName,
                     receivedTeam.Player_2.Avatar, receivedTeam.Player_2.Frame, receivedTeam.Player_2.Points, receivedTeam.Player_2.Order,
                     receivedTeam.Player_2.BotPlay, receivedTeam.Player_2.JoinedGame, receivedTeam.Player_2.ReadyToPlay);
-                
+
                 Teams[i] = new TrixTeam(receivedTeam.Order, p1, p2);
             }
             else
@@ -796,7 +801,7 @@ public class TrixState
                     TrixPlayer currentPlayer = Array.Find(Teams[i].Players, o => !o.IsNull() && o.PlayerId == receivedPlayer.PlayerId);
                     if (currentPlayer.IsNull())
                     {
-                        Teams[i].Players[j] = new TrixPlayer(receivedPlayer.PlayerId, receivedPlayer.TeamOrder, receivedPlayer.UserName, 
+                        Teams[i].Players[j] = new TrixPlayer(receivedPlayer.PlayerId, receivedPlayer.TeamOrder, receivedPlayer.UserName,
                             receivedPlayer.Avatar, receivedPlayer.Frame, receivedPlayer.Points,
                             receivedPlayer.Order, receivedPlayer.BotPlay, receivedPlayer.JoinedGame, receivedPlayer.ReadyToPlay);
                     }
@@ -812,6 +817,8 @@ public class TrixState
                 }
             }
         }
+         
+        ScreenComponentsController.Instance?.SubscribeAll();
 
         // compare tricks data [latches, slot of each latch, card and owner of each slot]
         for (int i = 0; i < Tricks.Length; i++)
@@ -836,7 +843,7 @@ public class TrixState
                     continue;
                 }
 
-                if (!currentLatch.Thrower.IsNull())
+                if (!currentLatch.Slot.IsNull() && !currentLatch.Thrower.IsNull())
                 {
                     if (receivedLatch.Thrower.PlayerId != currentLatch.Thrower.PlayerId ||
                         !receivedLatch.Slot.Card.IsTheSameCard(currentLatch.Slot.Card))
@@ -919,12 +926,12 @@ public class TrixState
             UpdateLocalStage(GameStageEnum.DropCards);
         }
         TolbaNO = ((int)Tolba | TolbaNO);
-        
-        if(Tolba == TolbaEnum.TRS)
+
+        if (Tolba == TolbaEnum.TRS)
         {
             TRSTolbaPlayerIdsOrder = new List<string>();
         }
-        
+
         SendUpdate();
     }
 
@@ -1009,8 +1016,7 @@ public class TrixState
         return JsonConvert.SerializeObject(this, Formatting.Indented);
     }
 
-    #region Testing
-#if UNITY_EDITOR
+    #region Testing   
     public void ClickCard(Card card, bool CheckedObyDropRulesBefore = false)
     {
         if (stage == GameStageEnum.DoublingCards)
@@ -1072,6 +1078,8 @@ public class TrixState
             //disable click any card
         }
     }
+
+#if UNITY_EDITOR
     public void ClickCard(TrixPlayer player, Card card, bool CheckedObyDropRulesBefore = false)
     {
         if (stage == GameStageEnum.DoublingCards)
@@ -1085,10 +1093,10 @@ public class TrixState
             int latchOrder = current.GetNextLatchOrder();
 
             current.AddLatch(new Slot(player.PlayerId, card));
-        
-            
+
+
             player.DropCard(card);
-          
+
             CurrentTrickUpdated?.Invoke(current);
 
             if (Tolba == TolbaEnum.TRS)
@@ -1116,7 +1124,7 @@ public class TrixState
                     Turn = GetPlayer(order).PlayerId;
                 }
             }
-            else 
+            else
             {
                 if (latchOrder == 4)
                 {
@@ -1135,15 +1143,13 @@ public class TrixState
             //disable click any card
         }
     }
+#endif
 
     public void ClickReadyToPlay(TrixPlayer player)
     {
         // disable click any card
         player.ReadyToPlay = true;
-        //hide ready to play button
-        SendUpdate();
     }
-#endif
     #endregion
 
     public void Dispose()
